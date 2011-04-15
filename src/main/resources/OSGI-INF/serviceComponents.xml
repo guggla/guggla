@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
+    <scr:component enabled="true"
+        name="guggla.ScalaScriptEngineFactory">
+        <implementation class="guggla.ScalaScriptEngineFactory" />
+        <service servicefactory="false">
+            <provide interface="javax.script.ScriptEngineFactory" />
+        </service>
+        <property name="service.pid" value="guggla.ScalaScriptEngineFactory" />
+        <reference name="settingsProvider" interface="guggla.SettingsProvider"
+            cardinality="0..1" policy="dynamic" bind="setSettingsProvider"
+            unbind="unsetSettingsProvider" />
+        <reference name="scriptInfo" interface="guggla.ScriptInfo"
+            cardinality="0..1" policy="dynamic" bind="setScriptInfo"
+            unbind="unsetScriptInfo" />
+    </scr:component>
+</components>

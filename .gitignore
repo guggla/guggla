@@ -1,0 +1,18 @@
+# Eclipse specific
+.metadata/
+.settings/y
+.scala_dependencies
+.classpath
+.project
+
+# Project specific
+*.log
+target/
+.log
+
+# IDEA Ignores
+*.iml
+*.ipr
+*.iws
+.idea/
+local.properties
