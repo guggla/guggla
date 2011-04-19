@@ -1,6 +1,6 @@
 # Eclipse specific
 .metadata/
-.settings/y
+.settings/
 .scala_dependencies
 .classpath
 .project

@@ -2,7 +2,7 @@ Guggla the [Scala](http://www.scala-lang.org/) Script Engine.
 
 ## About
 
-JSR 223 compliant [Scala](http://www.scala-lang.org/) Scripting engine. The scripting engine supports running in an OSGi container or as part of a stand alone application. 
+[JSR 223](http://www.jcp.org/en/jsr/detail?id=223) compliant [Scala](http://www.scala-lang.org/) Scripting engine. The scripting engine supports running in an OSGi container or as part of a stand alone application. 
 It has optional support for compiling from/to a JCR repository. 
 
 ## Getting Started
@@ -58,6 +58,7 @@ To Install the package in a running Sling instance use:
     }
 
 ## License
+The project is licensed under the [Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 ## History
 
