@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guggla
+package guggla.log
 
 import org.slf4j.Logger
 import scala.tools.nsc.Settings

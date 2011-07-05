@@ -22,7 +22,7 @@ import scala.tools.nsc.reporters.Reporter
 import scala.tools.nsc.util.{ SourceFile, BatchSourceFile }
 import scala.tools.nsc.{ FatalError, Settings, Global }
 import java.io.{ InputStream, OutputStream }
-import guggla.Utils.option
+import guggla.util.Utils.option
 
 /**
  * An interpreter for Scala scripts. Interpretation of scripts proceeds in the following steps:
@@ -292,8 +292,11 @@ class ScalaInterpreter(settings: Settings, reporter: Reporter, classes: Array[Ab
     } catch {
       case e: java.lang.reflect.InvocationTargetException =>
         throw new InterpreterException("Error executing " + name, e.getTargetException)
-      case e: Exception =>
+      case e: Exception => {
+        println("here is it")
         throw new InterpreterException("Error executing " + name, e)
+      }
+
     }
   }
 

@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guggla
+package guggla.fs
 
 import java.net.URL
 import java.io.{File, IOException, InputStream}
-import guggla.Utils.{valueOrElse, nullOrElse}
+import guggla.util.Utils._
 import org.osgi.framework.Bundle
 import scala.tools.nsc.io.AbstractFile
 

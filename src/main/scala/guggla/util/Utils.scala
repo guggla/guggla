@@ -14,10 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guggla
-
-import tools.nsc.io.AbstractFile
-import java.io.{ OutputStream, InputStream }
+package guggla.util
 
 /**
  * General purpose utility functions
@@ -103,22 +100,4 @@ object Utils {
       "forSome", "type", "var", "val", "def", "with", "yield", "match",
       "implicit", "lazy", "override", "sealed", "trait", "object").contains(token)
 
-}
-
-object NonExistingFile extends AbstractFile {
-  def name = null
-  def path = null
-  def absolute = this
-  def container = null
-  def file = null
-  def create { unsupported }
-  def delete { unsupported }
-  def isDirectory = false
-  def lastModified = 0
-  def input: InputStream = null
-  def output: OutputStream = null
-  def iterator: Iterator[AbstractFile] = Iterator.empty
-  def lookupName(name: String, directory: Boolean) = null
-  def lookupNameUnchecked(name: String, directory: Boolean) = this
-  override def exists = false
 }

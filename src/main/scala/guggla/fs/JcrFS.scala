@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guggla
+package guggla.fs
 
 import java.io.{ File, InputStream, OutputStream, IOException, ByteArrayOutputStream, ByteArrayInputStream }
 import javax.jcr.{ Session, Node, Property }
-import guggla.Utils.{ nullOrElse, valueOrElse }
+import guggla.util.Utils._
 import tools.nsc.io.AbstractFile
 
 /**

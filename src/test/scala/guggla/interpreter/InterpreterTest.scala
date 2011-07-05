@@ -19,7 +19,7 @@ package guggla.interpreter
 import java.io.File
 import junit.framework.TestCase
 import scala.tools.nsc.io.PlainFile
-import guggla.Utils.valueOrElse
+import guggla.util.Utils.valueOrElse
 
 /**
  * Standard test cases where files are read/written to/from the file system.

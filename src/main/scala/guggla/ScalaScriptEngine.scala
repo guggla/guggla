@@ -20,14 +20,18 @@ import java.io.{ BufferedReader, Reader, IOException, OutputStream, InputStream 
 import java.util.concurrent.locks.{ ReadWriteLock, ReentrantReadWriteLock }
 import javax.script.{ AbstractScriptEngine, Bindings, SimpleBindings, ScriptEngineFactory, ScriptException, ScriptContext }
 import guggla.interpreter.{ Bindings => ScalaBindings }
-import guggla.Utils.makeIdentifier
+import guggla.util.Utils.makeIdentifier
+import guggla.settings.ScriptInfo
 import org.slf4j.LoggerFactory
 import scala.tools.nsc.reporters.Reporter
-
-object ScalaScriptEngine {
-  private val log = LoggerFactory.getLogger(classOf[ScalaScriptEngine]);
-  private val NL = System.getProperty("line.separator");
-}
+import scala.tools.nsc.io.AbstractFile
+import guggla.settings.{ SettingsProvider, DefaultSettingsProvider }
+import ScalaScriptEngineFactory._
+import org.slf4j.LoggerFactory
+import guggla.interpreter.ScalaInterpreter
+import scala.tools.nsc.Settings
+import java.security.MessageDigest
+import scala.collection.JavaConversions._
 
 /**
  * JSR 223 compliant {@link ScriptEngine} for Scala.
@@ -57,9 +61,11 @@ object ScalaScriptEngine {
 class ScalaScriptEngine(factory: ScalaScriptEngineFactory, scriptInfo: ScriptInfo)
   extends AbstractScriptEngine {
 
-  import ScalaScriptEngine._
+  private val log = LoggerFactory.getLogger(classOf[ScalaScriptEngineFactory]);
 
-  private def rwLock = new ReentrantReadWriteLock();
+  private val rwLock = new ReentrantReadWriteLock();
+
+  private val NL = System.getProperty("line.separator");
 
   // -----------------------------------------------------< AbstractScriptEngine >---
 
@@ -88,34 +94,43 @@ class ScalaScriptEngine(factory: ScalaScriptEngineFactory, scriptInfo: ScriptInf
     eval(script.toString, context)
   }
 
+  def bindingsToScalaBindings(context: ScriptContext): ScalaBindings = {
+
+    val bindings = context.getBindings(ScriptContext.ENGINE_SCOPE)
+    val scalaBindings = ScalaBindings()
+
+    for (val key <- bindings.keySet) {
+      val value = bindings.get(key)
+      if (value == null) log.debug("{} has null value. skipping", key)
+      else scalaBindings.putValue(makeIdentifier(key), value)
+    }
+    return scalaBindings;
+  }
+
   @throws(classOf[ScriptException])
   def eval(script: String, context: ScriptContext) = {
     try {
-      val bindings = context.getBindings(ScriptContext.ENGINE_SCOPE)
-      val scalaBindings = ScalaBindings()
-
-      import scala.collection.JavaConversions._
-      for (val key <- bindings.keySet) {
-        val value = bindings.get(key)
-        if (value == null) log.debug("{} has null value. skipping", key)
-        else scalaBindings.putValue(makeIdentifier(key), value)
-      }
 
       val scriptClass = scriptInfo.getScriptClass(script, context)
+      val scalaBindings = bindingsToScalaBindings(context);
 
       // xxx: Scripts need to be compiled every time.
       // The preamble for injecting the bindings into the script
       // depends on the actual types of the bindings. So effectively
       // there is a specific script generated for each type of bindings.
-      val interpreter = factory.getScalaInterpreter(context)
-      var result: Reporter = writeLocked(rwLock) {
-        interpreter.compile(scriptClass, script, scalaBindings)
+
+      val interpreter = writeLocked(rwLock) {
+        getScalaInterpreter(context, script, scalaBindings, scriptClass);
       }
 
-      if (result != null && result.hasErrors)
-        throw new ScriptException(result.toString)
+      //      var result: Reporter = writeLocked(rwLock) {
+      //        interpreter.compile(scriptClass, script, scalaBindings)
+      //      }
+      //
+      //      if (result != null && result.hasErrors)
+      //        throw new ScriptException(result.toString)
 
-      result = readLocked(rwLock) {
+      val result = readLocked(rwLock) {
         val outputStream = new OutputStream {
           val writer = context.getWriter
 
@@ -171,4 +186,82 @@ class ScalaScriptEngine(factory: ScalaScriptEngineFactory, scriptInfo: ScriptInf
     }
   }
 
+  @throws(classOf[ScriptException])
+  def getScalaInterpreter(context: ScriptContext, script: String, bindings: ScalaBindings, scriptClass: String): ScalaInterpreter = {
+
+    //TODO fix this for JCR and BND
+    //TODO tmp dir?
+    val f = new java.io.File("tmp")
+    f.mkdir()
+    val tmp: AbstractFile = AbstractFile.getDirectory(f.getAbsolutePath);
+    val wName = hashScript(script, bindings);
+
+    val isFirstRun = Option(tmp.lookupName(wName, true)).isEmpty
+
+    val settingsProvider: SettingsProvider = new DefaultSettingsProvider(tmp.subdirectoryNamed(wName));
+
+    context.getAttribute(SCALA_SETTINGS) match {
+      case settings: Settings => settingsProvider.setScalaSettings(settings)
+      case x => if (x != null) log.warn("Invalid settings: {}", x);
+    }
+
+    context.getAttribute(SCALA_REPORTER) match {
+      case reporter: Reporter => settingsProvider.setReporter(reporter)
+      case x => if (x != null) log.warn("Invalid reporter: {}", x);
+    }
+
+    context.getAttribute(SCALA_CLASSPATH_X) match {
+      case classpath: Array[AbstractFile] => settingsProvider.setClasspathX(classpath)
+      case x => if (x != null) log.warn("Invalid classpathx: {}", x);
+    }
+
+    log.debug("Creating Scala script engine from settings {}", settingsProvider);
+
+    val scalaInterpreter = new ScalaInterpreter(settingsProvider.getSettings,
+      settingsProvider.getReporter, settingsProvider.getClasspathX);
+
+    if (isFirstRun) {
+      scalaInterpreter.compile(scriptClass, script, bindings)
+    }
+    return scalaInterpreter;
+  }
+
+  def hashScript(script: String, bindings: ScalaBindings): String = {
+    val all = script + "|" + bindings.toString
+    val sha = hexDigest(all.getBytes("UTF-8"));
+    return sha;
+  }
+
+  // source http://scala-tools.org/mvnsites/liftweb/lift-util/scaladocs/net/liftweb/util/SecurityHelpers.scala.html
+
+  /** create an hex encoded SHA hash from a Byte array */
+  def hexDigest(in: Array[Byte]): String = {
+    val binHash = (MessageDigest.getInstance("SHA")).digest(in)
+    hexEncode(binHash)
+  }
+
+  /** create an hex encoded SHA-256 hash from a Byte array */
+  def hexDigest256(in: Array[Byte]): String = {
+    val binHash = (MessageDigest.getInstance("SHA-256")).digest(in)
+    hexEncode(binHash)
+  }
+
+  /** encode a Byte array as hexadecimal characters */
+  def hexEncode(in: Array[Byte]): String = {
+    val sb = new StringBuilder
+    val len = in.length
+    def addDigit(in: Array[Byte], pos: Int, len: Int, sb: StringBuilder) {
+      if (pos < len) {
+        val b: Int = in(pos)
+        val msb = (b & 0xf0) >> 4
+        val lsb = (b & 0x0f)
+        sb.append((if (msb < 10) ('0' + msb).asInstanceOf[Char] else ('a' + (msb - 10)).asInstanceOf[Char]))
+        sb.append((if (lsb < 10) ('0' + lsb).asInstanceOf[Char] else ('a' + (lsb - 10)).asInstanceOf[Char]))
+
+        addDigit(in, pos + 1, len, sb)
+      }
+    }
+    addDigit(in, 0, len, sb)
+    sb.toString
+  }
 }

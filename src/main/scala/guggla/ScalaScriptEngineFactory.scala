@@ -16,17 +16,16 @@
  */
 package guggla
 
-import java.util.Collections
-import java.util.List
 import javax.script.{ ScriptException, ScriptEngine, ScriptEngineFactory, ScriptContext }
 import guggla.interpreter.ScalaInterpreter
+import guggla.settings.{ ScriptInfo, DefaultScriptInfo, SettingsProvider, DefaultSettingsProvider }
 import org.slf4j.LoggerFactory
 import scala.tools.nsc.Settings
 import scala.tools.nsc.io.AbstractFile
 import scala.tools.nsc.reporters.Reporter
+import collection.JavaConversions._
 
 object ScalaScriptEngineFactory {
-  private val log = LoggerFactory.getLogger(classOf[ScalaScriptEngineFactory]);
   private val NL = System.getProperty("line.separator");
 
   val SCALA_SETTINGS = "scala.settings"
@@ -36,10 +35,11 @@ object ScalaScriptEngineFactory {
   val ENGINE_NAME = "Scala Scripting Engine"
   val LANGUAGE_VERSION = "2.8.1"
   val ENGINE_VERSION = "0.9/scala " + LANGUAGE_VERSION
-  val EXTENSIONS = Collections.singletonList("scala")
+  val EXTENSIONS = List("scala")
   val LANGUAGE_NAME = "Scala"
-  val MIME_TYPES = Collections.singletonList("application/x-scala")
-  val NAMES = Collections.singletonList("scala")
+  val MIME_TYPES = List("application/x-scala")
+  val NAMES = List("scala")
+
 }
 
 /**
@@ -49,45 +49,48 @@ object ScalaScriptEngineFactory {
  * SettingsProvider are looked up and injected by the Service Component Runtime.
  */
 class ScalaScriptEngineFactory extends ScriptEngineFactory {
+
   import ScalaScriptEngineFactory._
 
-  @volatile
-  private var scriptInfo: ScriptInfo =
-    new AbstractScriptInfo {}
-
-  @volatile
-  private var settingsProvider: SettingsProvider =
-    new AbstractSettingsProvider {}
-
-  private var scalaInterpreter: ScalaInterpreter = null;
+  //
+  //  @volatile
+  private var scriptInfo: ScriptInfo = new DefaultScriptInfo();
+  //
+  //  @volatile
+  //  private var settingsProvider: SettingsProvider =
+  //    new AbstractSettingsProvider {}
+  //
+  //  private var scalaInterpreter: ScalaInterpreter = null;
 
   // -----------------------------------------------------< ScriptEngineFactory >---
 
-  def getEngineName: String = ENGINE_NAME
-  def getEngineVersion: String = ENGINE_VERSION
-  def getExtensions: List[String] = EXTENSIONS
-  def getLanguageName: String = LANGUAGE_NAME
-  def getLanguageVersion: String = LANGUAGE_VERSION
-  def getMimeTypes: List[String] = MIME_TYPES
-  def getNames: List[String] = NAMES
+  override def getEngineName: String = ENGINE_NAME
+  override def getEngineVersion: String = ENGINE_VERSION
+  override def getExtensions = EXTENSIONS
+  override def getLanguageName: String = LANGUAGE_NAME
+  override def getLanguageVersion = LANGUAGE_VERSION
+  override def getMimeTypes = MIME_TYPES
+  override def getNames = NAMES
 
-  def getParameter(key: String): String = key.toUpperCase match {
+  override def getParameter(key: String): String = key.toUpperCase match {
     case ScriptEngine.ENGINE => getEngineName
     case ScriptEngine.ENGINE_VERSION => getEngineVersion
-    case ScriptEngine.NAME => getNames.get(0)
+    case ScriptEngine.NAME => getNames.head
     case ScriptEngine.LANGUAGE => getLanguageName
     case ScriptEngine.LANGUAGE_VERSION => getLanguageVersion
     case "threading" => "multithreaded"
     case _ => null
   }
 
-  def getMethodCallSyntax(obj: String, method: String, args: String*): String =
+  override def getMethodCallSyntax(obj: String, method: String, args: String*): String =
     obj + "." + method + "(" + args.mkString(",") + ")"
 
-  def getOutputStatement(toDisplay: String): String =
+  override def getOutputStatement(toDisplay: String): String =
     "println(\"" + toDisplay + "\")"
 
+  //TODO rename
   def getProgram(statements: String*): String = {
+
     def packageOf(className: String) = {
       val i = className.lastIndexOf('.')
       if (i >= 0) className.substring(0, i)
@@ -111,8 +114,7 @@ class ScalaScriptEngineFactory extends ScriptEngineFactory {
       "}" + NL;
   }
 
-  def getScriptEngine: ScriptEngine =
-    new ScalaScriptEngine(this, scriptInfo)
+  override def getScriptEngine(): ScriptEngine = new ScalaScriptEngine(this, scriptInfo)
 
   // -----------------------------------------------------< SCR integration >---
 
@@ -125,62 +127,27 @@ class ScalaScriptEngineFactory extends ScriptEngineFactory {
   }
 
   protected def unsetScriptInfo(scriptInfo: ScriptInfo) {
-    this.scriptInfo = new AbstractScriptInfo {}
+    this.scriptInfo = new DefaultScriptInfo();
   }
 
   def getScriptInfoProvider: ScriptInfo = scriptInfo
 
-  def setSettingsProvider(settingsProvider: SettingsProvider) {
-    if (settingsProvider == null)
-      throw new IllegalArgumentException("SettingsProvider may not be null")
-
-    if (this.settingsProvider != settingsProvider) {
-      this.settingsProvider = settingsProvider
-      scalaInterpreter = null
-    }
-  }
-
-  protected def unsetSettingsProvider(settingsProvider: SettingsProvider) {
-    this.settingsProvider = new AbstractSettingsProvider {}
-  }
-
-  def getSettingsProvider: SettingsProvider = settingsProvider
+  //  def setSettingsProvider(settingsProvider: SettingsProvider) {
+  //    if (settingsProvider == null)
+  //      throw new IllegalArgumentException("SettingsProvider may not be null")
+  //
+  //    if (this.settingsProvider != settingsProvider) {
+  //      this.settingsProvider = settingsProvider
+  //      scalaInterpreter = null
+  //    }
+  //  }
+  //
+  //  protected def unsetSettingsProvider(settingsProvider: SettingsProvider) {
+  //    this.settingsProvider = new AbstractSettingsProvider {}
+  //  }
+  //
+  //  def getSettingsProvider: SettingsProvider = settingsProvider
 
   // -----------------------------------------------------< private >---
-
-  @throws(classOf[ScriptException])
-  def getScalaInterpreter(context: ScriptContext): ScalaInterpreter = {
-    context.getAttribute(SCALA_SETTINGS) match {
-      case settings: Settings =>
-        if (settingsProvider.setScalaSettings(settings)) scalaInterpreter = null
-
-      case x => if (x != null) log.warn("Invalid settings: {}", x);
-    }
-
-    context.getAttribute(SCALA_REPORTER) match {
-      case reporter: Reporter =>
-        if (settingsProvider.setReporter(reporter)) scalaInterpreter = null
-
-      case x => if (x != null) log.warn("Invalid reporter: {}", x);
-    }
-
-    context.getAttribute(SCALA_CLASSPATH_X) match {
-      case classpath: Array[AbstractFile] =>
-        if (settingsProvider.setClasspathX(classpath)) scalaInterpreter = null
-
-      case x => if (x != null) log.warn("Invalid classpathx: {}", x);
-    }
-
-    if (scalaInterpreter == null) {
-      log.debug("Creating Scala script engine from settings {}", settingsProvider);
-
-      scalaInterpreter = new ScalaInterpreter(
-        settingsProvider.getSettings,
-        settingsProvider.getReporter,
-        settingsProvider.getClasspathX);
-    }
-
-    return scalaInterpreter;
-  }
 
 }

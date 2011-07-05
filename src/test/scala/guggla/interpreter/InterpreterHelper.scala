@@ -21,7 +21,7 @@ import javax.script.ScriptException
 import scala.tools.nsc.Settings
 import scala.tools.nsc.io.AbstractFile
 import scala.tools.nsc.reporters.Reporter
-import guggla.BacklogReporter
+import guggla.log.BacklogReporter
 
 /**
  * Helper class for evaluating Scala scripts.

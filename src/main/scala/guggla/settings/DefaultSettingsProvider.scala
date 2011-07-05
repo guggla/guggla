@@ -14,11 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guggla
+package guggla.settings
 
-import javax.script.ScriptException;
+import guggla.ScalaScriptEngineFactory._
+import guggla.log.LogReporter
 import guggla.interpreter.ScalaInterpreter
 import org.slf4j.LoggerFactory
+import javax.script.ScriptException
 import scala.tools.nsc.Settings
 import scala.tools.nsc.io.AbstractFile
 import scala.tools.nsc.reporters.Reporter
@@ -26,10 +28,12 @@ import scala.tools.nsc.reporters.Reporter
 /**
  * Abstract base implementation of a {@link SettingsProvider}.
  */
-abstract class AbstractSettingsProvider extends SettingsProvider {
+class DefaultSettingsProvider(work: AbstractFile) extends SettingsProvider {
+
   protected var settings: Settings = {
     val settings = new Settings
     settings.usejavacp.value = true
+    settings.outputDirs.setSingleOutput(work);
     settings
   }
 
@@ -37,9 +41,9 @@ abstract class AbstractSettingsProvider extends SettingsProvider {
   protected var classpathX: Array[AbstractFile] = Array.empty
 
   @throws(classOf[ScriptException])
-  def setScalaSettings(settings: Settings): Boolean = {
+  override def setScalaSettings(settings: Settings): Boolean = {
     if (settings == null) {
-      throw new IllegalArgumentException(ScalaScriptEngineFactory.SCALA_SETTINGS + " must not be null");
+      throw new IllegalArgumentException(SCALA_SETTINGS + " must not be null");
     }
 
     if (this.settings != settings) {
@@ -50,12 +54,12 @@ abstract class AbstractSettingsProvider extends SettingsProvider {
   }
 
   @throws(classOf[ScriptException])
-  def getSettings: Settings = settings
+  override def getSettings: Settings = settings
 
   @throws(classOf[ScriptException])
-  def setReporter(reporter: Reporter): Boolean = {
+  override def setReporter(reporter: Reporter): Boolean = {
     if (reporter == null) {
-      throw new IllegalArgumentException(ScalaScriptEngineFactory.SCALA_REPORTER + " must not be null");
+      throw new IllegalArgumentException(SCALA_REPORTER + " must not be null");
     }
 
     if (this.reporter != null) {
@@ -65,10 +69,10 @@ abstract class AbstractSettingsProvider extends SettingsProvider {
   }
 
   @throws(classOf[ScriptException])
-  def getReporter: Reporter = reporter
+  override def getReporter: Reporter = reporter
 
   @throws(classOf[ScriptException])
-  def setClasspathX(classpathX: Array[AbstractFile]): Boolean = {
+  override def setClasspathX(classpathX: Array[AbstractFile]): Boolean = {
     if (this.classpathX != classpathX) {
       this.classpathX = classpathX
       true
@@ -76,7 +80,7 @@ abstract class AbstractSettingsProvider extends SettingsProvider {
   }
 
   @throws(classOf[ScriptException])
-  def getClasspathX: Array[AbstractFile] = classpathX
+  override def getClasspathX: Array[AbstractFile] = classpathX
 
   protected def createReporter(settings: Settings) =
     new LogReporter(LoggerFactory.getLogger(classOf[ScalaInterpreter]), settings);

@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guggla
+package guggla.fs
 
 import java.io.{ PrintWriter, InputStreamReader }
 import javax.jcr.{ Session, Repository, Node, SimpleCredentials }
 import junit.framework.TestCase
 import junit.framework.Assert.{ assertEquals, assertTrue, assertFalse }
-import guggla.JcrFS.{ JcrNode, JcrFile, JcrFolder }
+import guggla.fs.JcrFS.{ JcrNode, JcrFile, JcrFolder }
 import org.apache.jackrabbit.core.TransientRepository
 
 class JcrFSTest extends TestCase {

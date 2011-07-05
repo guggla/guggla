@@ -14,41 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package guggla
+package guggla.settings
 
-import javax.script.{ScriptContext, ScriptException}
+import javax.script.{ ScriptContext, ScriptException }
 
-object AbstractScriptInfo {
+object DefaultScriptInfo {
   val SCALA_SCRIPT_CLASS = "scala.script.class"
   val DEFAULT_SCALA_SCRIPT_CLASS = "guggla.Script"
 }
 
 /**
- * Abstract base implementation of {@link ScriptInfo}. 
+ * Default base implementation of {@link ScriptInfo}.
  */
-abstract class AbstractScriptInfo(protected var defaultScriptClass: String) extends ScriptInfo {
-  
+class DefaultScriptInfo(protected var defaultScriptClass: String) extends ScriptInfo {
+
   def this() {
-    this(AbstractScriptInfo.DEFAULT_SCALA_SCRIPT_CLASS)
+    this(DefaultScriptInfo.DEFAULT_SCALA_SCRIPT_CLASS)
   }
-  
+
   /**
    * @return  {@link #DEFAULT_SCALA_SCRIPT_CLASS}
    */
   def getDefaultScriptClass = defaultScriptClass
-                 
+
   /**
    * @return  the value of the {@link AbstractScriptInfo.SCALA_SCRIPT_CLASS} attribute
-   *   in the <code>context</code>. 
+   *   in the <code>context</code>.
    */
   @throws(classOf[ScriptException])
   def getScriptClass(script: String, context: ScriptContext) = {
-    val value = context.getAttribute(AbstractScriptInfo.SCALA_SCRIPT_CLASS);
-    
+    val value = context.getAttribute(DefaultScriptInfo.SCALA_SCRIPT_CLASS);
     value match {
-      case v: String  => v
-      case _          => defaultScriptClass
+      case v: String => v
+      case _ => defaultScriptClass
     }
   }
-                 
 }

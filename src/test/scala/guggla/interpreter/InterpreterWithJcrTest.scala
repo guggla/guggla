@@ -25,8 +25,8 @@ import junit.framework.Assert.assertEquals
 
 import org.apache.jackrabbit.core.TransientRepository
 
-import guggla.Utils.valueOrElse
-import guggla.JcrFS
+import guggla.util.Utils.valueOrElse
+import guggla.fs.JcrFS
 
 /**
  * JCR based test cases where files are read/written to/from a JCR repository
