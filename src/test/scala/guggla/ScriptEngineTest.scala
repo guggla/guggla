@@ -137,17 +137,13 @@ class ScriptEngineTest {
     var futures = List[Future[Boolean]]();
 
     for (i <- 0 to operations) {
-      val say = i % 3 match {
-        case 0 => "hello"
-        case 1 => "you again"
-        case 2 => "bye"
-      }
-      val c: Callable[Boolean] = () => buildSayCallable(code.toString, say);
+        val say = "#" + (i % threads);
+        val c: Callable[Boolean] = () => buildSayCallable(code.toString, say);
       val f: Future[Boolean] = e.submit(c);
       futures = f :: futures;
     }
     e.shutdown();
-    e.awaitTermination(120, TimeUnit.SECONDS);
+    e.awaitTermination(2 * threads * operations, TimeUnit.SECONDS);
 
     futures.foreach(f => {
       try {
@@ -161,7 +157,7 @@ class ScriptEngineTest {
   def buildSayCallable(code: String, say: String): Boolean = {
 
     val scriptEngine: ScriptEngine = getScriptEngine
-    println("thread executing with engine: " + scriptEngine + ", say: " + say);
+    // println("thread executing with engine: " + scriptEngine + ", say: " + say);
 
     val b = scriptEngine.getBindings(ScriptContext.ENGINE_SCOPE);
     b.put("obj", new TestInject(say));
@@ -175,6 +171,8 @@ class ScriptEngineTest {
 
   class TestInject(sayWhat: String) {
     def saySomething() = sayWhat;
+
+    override def toString() = { "TestInject(" + sayWhat + ")"; }
   }
 
 }
