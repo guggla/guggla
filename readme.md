@@ -63,3 +63,4 @@ The project is licensed under the [Apache Software License, Version 2.0](http://
 ## History
 
 The project began its life as a scripting engine module in the [Apache Sling](http://sling.apache.com/) project.
+It has been presented at Jazoon 2009 in Zurich ([Scala for Sling](http://people.apache.org/~mduerig/scala4sling/)) and at Scala Days 2010 in Lausanne ([Scala for Scripting](http://people.apache.org/~mduerig/scala4scripting/)).
