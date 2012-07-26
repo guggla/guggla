@@ -25,8 +25,8 @@ import org.slf4j.LoggerFactory
 import scala.tools.nsc.reporters.Reporter
 
 object ScalaScriptEngine {
-  private val log = LoggerFactory.getLogger(classOf[ScalaScriptEngine]);
-  private val NL = System.getProperty("line.separator");
+  private val log = LoggerFactory.getLogger(classOf[ScalaScriptEngine])
+  private val NL = System.getProperty("line.separator")
 }
 
 /**
@@ -59,7 +59,7 @@ class ScalaScriptEngine(factory: ScalaScriptEngineFactory, scriptInfo: ScriptInf
 
   import ScalaScriptEngine._
 
-  private def rwLock = new ReentrantReadWriteLock();
+  private def rwLock = new ReentrantReadWriteLock()
 
   // -----------------------------------------------------< AbstractScriptEngine >---
 
@@ -67,13 +67,13 @@ class ScalaScriptEngine(factory: ScalaScriptEngineFactory, scriptInfo: ScriptInf
     new SimpleBindings
 
   def getFactory: ScriptEngineFactory =
-    factory;
+    factory
 
   @throws(classOf[ScriptException])
   def eval(reader: Reader, context: ScriptContext) = {
-    val script = new StringBuilder;
+    val script = new StringBuilder
     try {
-      val bufferedScript = new BufferedReader(reader);
+      val bufferedScript = new BufferedReader(reader)
 
       var nextLine = bufferedScript.readLine
       while (nextLine != null) {
@@ -85,7 +85,7 @@ class ScalaScriptEngine(factory: ScalaScriptEngineFactory, scriptInfo: ScriptInf
       case e: IOException => throw new ScriptException(e)
     }
 
-    eval(script.toString, context)
+    eval(script.toString(), context)
   }
 
   @throws(classOf[ScriptException])
@@ -134,7 +134,7 @@ class ScalaScriptEngine(factory: ScalaScriptEngineFactory, scriptInfo: ScriptInf
           val reader = context.getReader
 
           @throws(classOf[IOException])
-          def read() = reader.read();
+          def read() = reader.read()
         }
 
         val result = interpreter.execute(scriptClass, scalaBindings, inputStream, outputStream)

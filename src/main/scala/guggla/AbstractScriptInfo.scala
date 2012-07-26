@@ -43,7 +43,7 @@ abstract class AbstractScriptInfo(protected var defaultScriptClass: String) exte
    */
   @throws(classOf[ScriptException])
   def getScriptClass(script: String, context: ScriptContext) = {
-    val value = context.getAttribute(AbstractScriptInfo.SCALA_SCRIPT_CLASS);
+    val value = context.getAttribute(AbstractScriptInfo.SCALA_SCRIPT_CLASS)
     
     value match {
       case v: String  => v

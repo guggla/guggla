@@ -26,10 +26,10 @@ import guggla.Utils.valueOrElse
  */
 class InterpreterTest extends TestCase with Tests {
 
-  var interpreterHelper: InterpreterHelper = null;
+  var interpreterHelper: InterpreterHelper = null
 
   override def setUp() {
-    super.setUp();
+    super.setUp()
 
     val workDir = new PlainFile(new File("target")).subdirectoryNamed("tmp")
     val srcDir = workDir.subdirectoryNamed("src")

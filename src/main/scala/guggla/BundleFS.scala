@@ -70,8 +70,8 @@ object BundleFS {
       @throws(classOf[IOException])
       def output = throw new IOException("not supported: output")
 
-      def create { unsupported }
-      def delete { unsupported }
+      def create { unsupported() }
+      def delete { unsupported() }
 
       def lookupNameUnchecked(name: String, directory: Boolean) = {
         val file = lookupName(name, directory)
@@ -92,7 +92,7 @@ object BundleFS {
         (u.substring(if (j > 0) 1 else 0, if (j > 1) j - 1 else j), u.substring(j, k))
       }
 
-      override def toString = fullName
+      override def toString() = fullName
     }
 
     class DirEntry(url: URL, parent: DirEntry) extends BundleEntry(url, parent) {
@@ -108,7 +108,7 @@ object BundleFS {
           
           var nextEntry = prefetch()
           
-          def hasNext() = {
+          def hasNext = {
             if (nextEntry == null)
               nextEntry = prefetch()
            
@@ -116,7 +116,7 @@ object BundleFS {
           }
           
           def next() = {
-            if (hasNext()) {
+            if (hasNext) {
                 val entry = nextEntry
                 nextEntry = null
                 entry

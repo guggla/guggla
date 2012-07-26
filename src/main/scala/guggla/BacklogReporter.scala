@@ -16,9 +16,9 @@
  */
 package guggla
 
-import scala.tools.nsc.Settings;
-import scala.tools.nsc.reporters.AbstractReporter;
-import scala.tools.nsc.util.Position;
+import scala.tools.nsc.Settings
+import scala.tools.nsc.reporters.AbstractReporter
+import scala.tools.nsc.util.Position
 
 object BacklogReporter {
   val DEFAULT_SIZE = 50
@@ -31,7 +31,7 @@ class BacklogReporter(val settings: Settings, size: Int) extends AbstractReporte
     this(settings, BacklogReporter.DEFAULT_SIZE)
   } 
 
-  override def reset() {
+  override def reset {
     super.reset
     backLog = Nil
   }
@@ -46,7 +46,7 @@ class BacklogReporter(val settings: Settings, size: Int) extends AbstractReporte
     }
   }
 
-  override def displayPrompt() {
+  override def displayPrompt {
     // empty
   }
   

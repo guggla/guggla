@@ -27,13 +27,13 @@ trait Bindings extends Map[String, AnyRef] {
    * Associate a value with a name
    * @param name
    * @param value
-   * @returns  The value which was previously associated with the
+   * @return  The value which was previously associated with the
    *   given name or null if none.
    */
   def putValue(name: String, value: AnyRef): AnyRef
 
   /**
-   * @returns  the value associated with the given name
+   * @return  the value associated with the given name
    * @param name
    */
   def getValue(name: String): AnyRef =
@@ -99,7 +99,7 @@ private class BindingsWrapper(map: mutable.Map[String, AnyRef]) extends Bindings
 
   override def size = map.size
   override def get(name: String) = map.get(name)
-  override def iterator: Iterator[(String, AnyRef)] = map.elements
+  override def iterator: Iterator[(String, AnyRef)] = map.iterator
 
   def putValue(name: String, value: AnyRef) =
     map.put(name, value) match {

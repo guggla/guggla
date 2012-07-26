@@ -40,14 +40,14 @@ class InterpreterWithJcrTest extends TestCase with Tests {
   var workNode: Node = null
 
   override def setUp() {
-    super.setUp();
+    super.setUp()
 
     repository = new TransientRepository
     session = repository.login(new SimpleCredentials("admin", "admin".toCharArray))
     val rootNode = session.getRootNode
-    workNode = rootNode.addNode("scala_tests", "nt:folder");
-    workNode.getSession().save();
-    val workDir = JcrFS.create(workNode);
+    workNode = rootNode.addNode("scala_tests", "nt:folder")
+    workNode.getSession.save()
+    val workDir = JcrFS.create(workNode)
     val srcDir = workDir.subdirectoryNamed("src")
     val outDir = workDir.subdirectoryNamed("classes")
 
@@ -61,7 +61,7 @@ class InterpreterWithJcrTest extends TestCase with Tests {
   override def tearDown() {
     interpreterHelper = null
     session.logout()
-    repository.shutdown
+    repository.shutdown()
     repository = null
     super.tearDown()
   }

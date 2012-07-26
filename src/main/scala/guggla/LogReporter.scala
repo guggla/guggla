@@ -26,9 +26,9 @@ class LogReporter(logger: Logger, settings: Settings) extends BacklogReporter(se
     super.display(pos, msg, severity)
 
     severity match {
-      case INFO => logger.info("{}: {}", msg, pos);
-      case WARNING => logger.warn("{}: {}", msg, pos);
-      case _ => logger.error("{}: {}", msg, pos);
+      case INFO => logger.info("{}: {}", msg, pos)
+      case WARNING => logger.warn("{}: {}", msg, pos)
+      case _ => logger.error("{}: {}", msg, pos)
     }
   }
 

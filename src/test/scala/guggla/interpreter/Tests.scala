@@ -26,12 +26,12 @@ import javax.script.ScriptException
 trait Tests {
   var interpreterHelper: InterpreterHelper
 
-  def testEvalString {
+  def testEvalString() {
     val code = "package a { class Testi(args: TestiArgs) { print(1 + 2) }}"
     assertEquals("3", interpreterHelper.eval("a.Testi", code, Bindings()))
   }
 
-  def testEvalError {
+  def testEvalError() {
     val code = "syntax error"
     try {
       interpreterHelper.eval("a.Testi", code, Bindings())
@@ -41,8 +41,8 @@ trait Tests {
     }
   }
 
-  def testError {
-    val err = "Some error here";
+  def testError() {
+    val err = "Some error here"
     val code = "package a { class Testi(args: TestiArgs) { throw new Error(\"" + err + "\") }}"
     try {
       interpreterHelper.eval("a.Testi", code, Bindings())
@@ -52,7 +52,7 @@ trait Tests {
     }
   }
 
-  def testScalaInterpreter {
+  def testScalaInterpreter() {
     val bindings = Bindings()
     val time = java.util.Calendar.getInstance.getTime
     bindings.putValue("msg", "Hello world")
@@ -62,7 +62,7 @@ trait Tests {
     assertEquals("Hello world: " + time, result)
   }
 
-  def testCompileExecute {
+  def testCompileExecute() {
     val srcDir = interpreterHelper.srcDir
     val interpreter = interpreterHelper.interpreter
 
@@ -75,7 +75,7 @@ trait Tests {
     val src = srcDir.fileNamed("Testi.scala")
     val writer = new PrintWriter(src.output)
     writer.print(code)
-    writer.close
+    writer.close()
 
     val out = new java.io.ByteArrayOutputStream
     var result = interpreter.compile("a.Testi", src, bindings)

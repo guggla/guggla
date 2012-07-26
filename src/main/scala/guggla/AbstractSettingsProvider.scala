@@ -16,7 +16,7 @@
  */
 package guggla
 
-import javax.script.ScriptException;
+import javax.script.ScriptException
 import guggla.interpreter.ScalaInterpreter
 import org.slf4j.LoggerFactory
 import scala.tools.nsc.Settings
@@ -39,7 +39,7 @@ abstract class AbstractSettingsProvider extends SettingsProvider {
   @throws(classOf[ScriptException])
   def setScalaSettings(settings: Settings): Boolean = {
     if (settings == null) {
-      throw new IllegalArgumentException(ScalaScriptEngineFactory.SCALA_SETTINGS + " must not be null");
+      throw new IllegalArgumentException(ScalaScriptEngineFactory.SCALA_SETTINGS + " must not be null")
     }
 
     if (this.settings != settings) {
@@ -55,7 +55,7 @@ abstract class AbstractSettingsProvider extends SettingsProvider {
   @throws(classOf[ScriptException])
   def setReporter(reporter: Reporter): Boolean = {
     if (reporter == null) {
-      throw new IllegalArgumentException(ScalaScriptEngineFactory.SCALA_REPORTER + " must not be null");
+      throw new IllegalArgumentException(ScalaScriptEngineFactory.SCALA_REPORTER + " must not be null")
     }
 
     if (this.reporter != null) {

@@ -151,7 +151,7 @@ class ScalaInterpreter(settings: Settings, reporter: Reporter, classes: Array[Ab
 
   /**
    * Compiles a single source file. No pre-processing takes place.
-   * @param sources  source file
+   * @param source  source file
    * @return  result of compilation
    */
   def compile(source: AbstractFile): Reporter = {
@@ -322,7 +322,7 @@ class ScalaInterpreter(settings: Settings, reporter: Reporter, classes: Array[Ab
     execute(name, bindings, option(in), option(out))
 
   def outputDir = try {
-    settings.outputDirs.outputDirFor(null);
+    settings.outputDirs.outputDirFor(null)
   } catch {
     case e: FatalError => throw new InterpreterException(e)
   }

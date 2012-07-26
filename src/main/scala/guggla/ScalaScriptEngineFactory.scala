@@ -26,8 +26,8 @@ import scala.tools.nsc.io.AbstractFile
 import scala.tools.nsc.reporters.Reporter
 
 object ScalaScriptEngineFactory {
-  private val log = LoggerFactory.getLogger(classOf[ScalaScriptEngineFactory]);
-  private val NL = System.getProperty("line.separator");
+  private val log = LoggerFactory.getLogger(classOf[ScalaScriptEngineFactory])
+  private val NL = System.getProperty("line.separator")
 
   val SCALA_SETTINGS = "scala.settings"
   val SCALA_REPORTER = "scala.reporter"
@@ -43,7 +43,7 @@ object ScalaScriptEngineFactory {
 }
 
 /**
- * JSR 223 compliant {@link ScriptEngineFactory} for Scala.
+ * JSR 223 compliant {@link `ScriptEngineFactory`} for Scala.
  * {@link ScriptInfo} and {@link SettingsProvider} may be used to parametrize
  * this factory. When running inside an OSGi container, ScriptInfo and
  * SettingsProvider are looked up and injected by the Service Component Runtime.
@@ -59,7 +59,7 @@ class ScalaScriptEngineFactory extends ScriptEngineFactory {
   private var settingsProvider: SettingsProvider =
     new AbstractSettingsProvider {}
 
-  private var scalaInterpreter: ScalaInterpreter = null;
+  private var scalaInterpreter: ScalaInterpreter = null
 
   // -----------------------------------------------------< ScriptEngineFactory >---
 
@@ -101,14 +101,14 @@ class ScalaScriptEngineFactory extends ScriptEngineFactory {
     }
 
     val qClassName = scriptInfo.getDefaultScriptClass
-    val packageName = packageOf(qClassName);
-    val className = classOf(qClassName);
+    val packageName = packageOf(qClassName)
+    val className = classOf(qClassName)
 
     "package " + packageName + " {" + NL +
       "  class " + className + "(args: " + className + "Args) {" + NL +
       statements.mkString(NL) +
       "  }" + NL +
-      "}" + NL;
+      "}" + NL
   }
 
   def getScriptEngine: ScriptEngine =
@@ -154,33 +154,33 @@ class ScalaScriptEngineFactory extends ScriptEngineFactory {
       case settings: Settings =>
         if (settingsProvider.setScalaSettings(settings)) scalaInterpreter = null
 
-      case x => if (x != null) log.warn("Invalid settings: {}", x);
+      case x => if (x != null) log.warn("Invalid settings: {}", x)
     }
 
     context.getAttribute(SCALA_REPORTER) match {
       case reporter: Reporter =>
         if (settingsProvider.setReporter(reporter)) scalaInterpreter = null
 
-      case x => if (x != null) log.warn("Invalid reporter: {}", x);
+      case x => if (x != null) log.warn("Invalid reporter: {}", x)
     }
 
     context.getAttribute(SCALA_CLASSPATH_X) match {
       case classpath: Array[AbstractFile] =>
         if (settingsProvider.setClasspathX(classpath)) scalaInterpreter = null
 
-      case x => if (x != null) log.warn("Invalid classpathx: {}", x);
+      case x => if (x != null) log.warn("Invalid classpathx: {}", x)
     }
 
     if (scalaInterpreter == null) {
-      log.debug("Creating Scala script engine from settings {}", settingsProvider);
+      log.debug("Creating Scala script engine from settings {}", settingsProvider)
 
       scalaInterpreter = new ScalaInterpreter(
         settingsProvider.getSettings,
         settingsProvider.getReporter,
-        settingsProvider.getClasspathX);
+        settingsProvider.getClasspathX)
     }
 
-    return scalaInterpreter;
+    scalaInterpreter
   }
 
 }

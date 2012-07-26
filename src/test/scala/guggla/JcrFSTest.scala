@@ -46,9 +46,9 @@ class JcrFSTest extends TestCase {
     super.tearDown()
   }
 
-  def testTraverse: Unit = {
+  def testTraverse() {
     def traverse(entry: JcrNode): String = {
-      (for (entry <- entry.elements) yield {
+      (for (entry <- entry.iterator) yield {
         entry match {
           case file: JcrFile => file.path
           case folder: JcrFolder => folder.path + traverse(folder)
@@ -86,7 +86,7 @@ class JcrFSTest extends TestCase {
     assertEquals(expected, actual)
   }
 
-  def testCreateFile {
+  def testCreateFile() {
     val root = JcrFS.create(testRoot)
     val file = root.fileNamed("file")
     val fileNode = testRoot.getNode("file")
@@ -105,7 +105,7 @@ class JcrFSTest extends TestCase {
     assertEquals(-1, input.read)
   }
 
-  def testCreateFolder {
+  def testCreateFolder() {
     val root = JcrFS.create(testRoot)
     val folder = root.subdirectoryNamed("folder")
     val folderNode = testRoot.getNode("folder")
@@ -116,21 +116,21 @@ class JcrFSTest extends TestCase {
     assertEquals("/testRoot/folder", folder.path)
   }
 
-  def testParent {
+  def testParent() {
     val root = JcrFS.create(testRoot)
     val folder = root.subdirectoryNamed("folder")
     val file = folder.fileNamed("file")
     assertEquals(folder, file.container)
   }
 
-  def testReadWriteContent {
+  def testReadWriteContent() {
     val root = JcrFS.create(testRoot)
     val file = root.fileNamed("file")
     val contentNode = testRoot.getNode("file/jcr:content")
 
     val writer = new PrintWriter(file.output)
     writer.print("Hello world")
-    writer.close
+    writer.close()
     assertEquals("Hello world", contentNode.getProperty("jcr:data").getString)
     assertEquals(11, file.sizeOption.get)
 

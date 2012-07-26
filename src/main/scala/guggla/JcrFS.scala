@@ -106,8 +106,8 @@ object JcrFS {
 
     override def hashCode: Int = path.hashCode
 
-    def create { unsupported }
-    def delete { unsupported }
+    def create { unsupported() }
+    def delete { unsupported() }
 
     def lookupNameUnchecked(name: String, directory: Boolean) = {
       val file = lookupName(name, directory)
@@ -140,9 +140,9 @@ object JcrFS {
      */
     def iterator: Iterator[JcrNode] =
       new Iterator[Node] {
-        val childs = node.getNodes
-        def hasNext = childs.hasNext
-        def next = childs.next.asInstanceOf[Node]
+        val children = node.getNodes
+        def hasNext = children.hasNext
+        def next() = children.next.asInstanceOf[Node]
       }
         .filter((node: Node) =>
           "nt:file" == node.getPrimaryNodeType.getName ||
@@ -173,7 +173,7 @@ object JcrFS {
       valueOrElse(lookupName(name, false)) {
         val file = node.addNode(name, "nt:file")
         val content = file.addNode("jcr:content", "nt:resource")
-        content.setProperty("jcr:mimeType", "application/octet-stream") // todo fix: dont hc MIME
+        content.setProperty("jcr:mimeType", "application/octet-stream") // todo fix: don't hc MIME
         content.setProperty("jcr:data", emptyInputStream)
         content.setProperty("jcr:lastModified", System.currentTimeMillis)
         node.save()

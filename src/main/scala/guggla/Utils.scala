@@ -46,7 +46,7 @@ object Utils {
   /**
    * Converts a value into an Option.
    * @param value
-   * @returns <code>Some(value)</code> if value is not <code>null</code>,
+   * @return <code>Some(value)</code> if value is not <code>null</code>,
    * <code>None</code> otherwise.
    */
   def option[T](value: T): Option[T] =
@@ -58,9 +58,9 @@ object Utils {
    * @return Legal Java/Scala identifier corresponding to the given identifier
    */
   def makeIdentifier(identifier: String) = {
-    val id = new StringBuilder(identifier.length);
+    val id = new StringBuilder(identifier.length)
     if (!Character.isJavaIdentifierStart(identifier.charAt(0)))
-      id.append('_');
+      id.append('_')
 
     for (val ch <- identifier) {
       if (Character.isJavaIdentifierPart(ch) && ch != '_') id.append(ch)
@@ -68,10 +68,10 @@ object Utils {
       else id.append(mangleChar(ch))
     }
 
-    if (isKeyword(id.toString))
+    if (isKeyword(id.toString()))
       id.append('_')
 
-    id.toString
+    id.toString()
   }
 
   /**
@@ -111,8 +111,8 @@ object NonExistingFile extends AbstractFile {
   def absolute = this
   def container = null
   def file = null
-  def create { unsupported }
-  def delete { unsupported }
+  def create { unsupported() }
+  def delete { unsupported() }
   def isDirectory = false
   def lastModified = 0
   def input: InputStream = null
