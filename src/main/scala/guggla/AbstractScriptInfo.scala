@@ -24,7 +24,7 @@ object AbstractScriptInfo {
 }
 
 /**
- * Abstract base implementation of {@link ScriptInfo}. 
+ * Abstract base implementation of [[guggla.ScriptInfo]].
  */
 abstract class AbstractScriptInfo(protected var defaultScriptClass: String) extends ScriptInfo {
   
@@ -33,12 +33,12 @@ abstract class AbstractScriptInfo(protected var defaultScriptClass: String) exte
   }
   
   /**
-   * @return  {@link #DEFAULT_SCALA_SCRIPT_CLASS}
+   * @return  [[guggla.AbstractScriptInfo#DEFAULT_SCALA_SCRIPT_CLASS]]
    */
   def getDefaultScriptClass = defaultScriptClass
                  
   /**
-   * @return  the value of the {@link AbstractScriptInfo.SCALA_SCRIPT_CLASS} attribute
+   * @return  the value of the [[guggla.AbstractScriptInfo#SCALA_SCRIPT_CLASS]] attribute
    *   in the <code>context</code>. 
    */
   @throws(classOf[ScriptException])

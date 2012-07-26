@@ -27,10 +27,13 @@ import guggla.Utils.option
 /**
  * An interpreter for Scala scripts. Interpretation of scripts proceeds in the following steps:
  * <ol>
- * <li>Pre-compilation: The source script is {@link #preProcess} wrapped into a wrapper which
- *   contains variable definitions of the approproate types for the passed {@link Bindings bindings}.</li>
- * <li>Compilation: The resulting source code is {@link #compile compiled} by the Scala compiler. </li>
- * <li>Execution: The class file is {@link #execute loaded} and its main method called.</li>
+ * <li>Pre-compilation: The source script is wrapped into a wrapper which
+ *   contains variable definitions of the appropriate types for the passed
+ *   [[guggla.interpreter.Bindings bindings]].</li>
+ * <li>Compilation: The resulting source code is [[guggla.interpreter.ScalaInterpreter#compile compiled]]
+ *   by the Scala compiler. </li>
+ * <li>Execution: The class file is [[guggla.interpreter.ScalaInterpreter#execute loaded]] and its main
+ *   method called.</li>
  * </ol>
  * @param settings  compiler settings
  * @param reporter  reporter for compilation
@@ -171,7 +174,7 @@ class ScalaInterpreter(settings: Settings, reporter: Reporter, classes: Array[Ab
   }
 
   /**
-   * Interprete a script
+   * Interpret a script
    * @param name  name of the script
    * @param code  source code
    * @param bindings  variable bindings to pass to the script
@@ -181,7 +184,7 @@ class ScalaInterpreter(settings: Settings, reporter: Reporter, classes: Array[Ab
    * @throws InterpreterException
    */
   @throws(classOf[InterpreterException])
-  def interprete(name: String, code: String, bindings: Bindings, in: Option[InputStream],
+  def interpret(name: String, code: String, bindings: Bindings, in: Option[InputStream],
     out: Option[OutputStream]): Reporter = {
     compile(name, code, bindings)
     if (reporter.hasErrors)
@@ -192,7 +195,7 @@ class ScalaInterpreter(settings: Settings, reporter: Reporter, classes: Array[Ab
   }
 
   /**
-   * Same as <code>interprete(name, code, bindings, None, None)</code>.
+   * Same as <code>interpret(name, code, bindings, None, None)</code>.
    * @param name  name of the script
    * @param code  source code
    * @param bindings  variable bindings to pass to the script
@@ -200,11 +203,11 @@ class ScalaInterpreter(settings: Settings, reporter: Reporter, classes: Array[Ab
    * @throws InterpreterException
    */
   @throws(classOf[InterpreterException])
-  def interprete(name: String, code: String, bindings: Bindings): Reporter =
-    interprete(name, code, bindings, None, None)
+  def interpret(name: String, code: String, bindings: Bindings): Reporter =
+    interpret(name, code, bindings, None, None)
 
   /**
-   * Same as <code>interprete(name, code, bindings, Some(in), Some(out))</code>.
+   * Same as <code>interpret(name, code, bindings, Some(in), Some(out))</code>.
    * @param name  name of the script
    * @param code  source code
    * @param bindings  variable bindings to pass to the script
@@ -214,12 +217,12 @@ class ScalaInterpreter(settings: Settings, reporter: Reporter, classes: Array[Ab
    * @throws InterpreterException
    */
   @throws(classOf[InterpreterException])
-  def interprete(name: String, code: String, bindings: Bindings, in: InputStream,
+  def interpret(name: String, code: String, bindings: Bindings, in: InputStream,
     out: OutputStream): Reporter =
-    interprete(name, code, bindings, option(in), option(out))
+    interpret(name, code, bindings, option(in), option(out))
 
   /**
-   * Interprete a script
+   * Interpret a script
    * @param name  name of the script
    * @param source source file
    * @param bindings  variable bindings to pass to the script
@@ -229,7 +232,7 @@ class ScalaInterpreter(settings: Settings, reporter: Reporter, classes: Array[Ab
    * @throws InterpreterException
    */
   @throws(classOf[InterpreterException])
-  def interprete(name: String, source: AbstractFile, bindings: Bindings, in: Option[InputStream],
+  def interpret(name: String, source: AbstractFile, bindings: Bindings, in: Option[InputStream],
     out: Option[OutputStream]): Reporter = {
     compile(name, source, bindings)
     if (reporter.hasErrors)
@@ -240,7 +243,7 @@ class ScalaInterpreter(settings: Settings, reporter: Reporter, classes: Array[Ab
   }
 
   /**
-   * Same as <code>interprete(name, code, bindings, None, None)</code>.
+   * Same as <code>interpret(name, code, bindings, None, None)</code>.
    * @param name  name of the script
    * @param source source file
    * @param bindings  variable bindings to pass to the script
@@ -248,11 +251,11 @@ class ScalaInterpreter(settings: Settings, reporter: Reporter, classes: Array[Ab
    * @throws InterpreterException
    */
   @throws(classOf[InterpreterException])
-  def interprete(name: String, source: AbstractFile, bindings: Bindings): Reporter =
-    interprete(name, source, bindings, None, None)
+  def interpret(name: String, source: AbstractFile, bindings: Bindings): Reporter =
+    interpret(name, source, bindings, None, None)
 
   /**
-   * Same as <code>interprete(name, code, bindings, Some(in), Some(out))</code>.
+   * Same as <code>interpret(name, code, bindings, Some(in), Some(out))</code>.
    * @param name  name of the script
    * @param source source file
    * @param bindings  variable bindings to pass to the script
@@ -262,9 +265,9 @@ class ScalaInterpreter(settings: Settings, reporter: Reporter, classes: Array[Ab
    * @throws InterpreterException
    */
   @throws(classOf[InterpreterException])
-  def interprete(name: String, source: AbstractFile, bindings: Bindings, in: InputStream,
+  def interpret(name: String, source: AbstractFile, bindings: Bindings, in: InputStream,
     out: OutputStream): Reporter =
-    interprete(name, source, bindings, option(in), option(out))
+    interpret(name, source, bindings, option(in), option(out))
 
   /**
    * Executes a compiled script

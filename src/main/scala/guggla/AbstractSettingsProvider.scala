@@ -24,7 +24,7 @@ import scala.tools.nsc.io.AbstractFile
 import scala.tools.nsc.reporters.Reporter
 
 /**
- * Abstract base implementation of a {@link SettingsProvider}.
+ * Abstract base implementation of a [[guggla.SettingsProvider]].
  */
 abstract class AbstractSettingsProvider extends SettingsProvider {
   protected var settings: Settings = {
@@ -79,6 +79,6 @@ abstract class AbstractSettingsProvider extends SettingsProvider {
   def getClasspathX: Array[AbstractFile] = classpathX
 
   protected def createReporter(settings: Settings) =
-    new LogReporter(LoggerFactory.getLogger(classOf[ScalaInterpreter]), settings);
+    new LogReporter(LoggerFactory.getLogger(classOf[ScalaInterpreter]), settings)
 
 }

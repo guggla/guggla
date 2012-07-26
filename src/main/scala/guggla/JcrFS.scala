@@ -22,26 +22,26 @@ import guggla.Utils.{ nullOrElse, valueOrElse }
 import tools.nsc.io.AbstractFile
 
 /**
- * Implementation of {@link AbstractFile} on top of the {@link javax.jcr.Node}s
- * of a JCR repositoy.
+ * Implementation of [[scala.tools.nsc.io.AbstractFile]] on top of the [[javax.jcr.Node]]
+ * of a JCR repository.
  */
 object JcrFS {
 
   /**
-   * Create a new {@link AbstractFile} for the given node.
+   * Create a new [[scala.tools.nsc.io.AbstractFile]] for the given node.
    * @param node
    * @throws IOException  if the node type is neither nt:folder nor nt:file
    */
   def create(node: Node): JcrNode = node.getPrimaryNodeType.getName match {
-    case "nt:file" => JcrFile(node) // todo fix: dont hc ns prefixes
+    case "nt:file" => JcrFile(node) // todo fix: don't hc ns prefixes
     case "nt:folder" => JcrFolder(node)
     case "sling:Folder" => JcrFolder(node)
     case _ => throw new IOException("Neither file nor folder: " + node.getPath)
   }
 
   /**
-   * Create a new {@link AbstractFile} for node at the given path in the given
-   * {@link javax.jcr.Session}.
+   * Create a new [[scala.tools.nsc.io.AbstractFile]] for node at the given path in the given
+   * [[javax.jcr.Session]]
    * @param session
    * @param path
    * @throws IOException  if the node at the given path is neither nt:folder nor
@@ -58,7 +58,7 @@ object JcrFS {
     require(node != null, "node must not be null")
 
     /**
-     * @returns  an empty stream
+     * @return  an empty stream
      */
     val emptyInputStream: InputStream = new InputStream {
       override def read = -1
@@ -69,26 +69,26 @@ object JcrFS {
       else "[" + node.getIndex + "]"
 
     /**
-     * @returns  the name of the node covered
+     * @return  the name of the node covered
      */
     def name: String = node.getName + getIndex
 
     /**
-     * @returns  the path of the node covered
+     * @return  the path of the node covered
      */
     def path: String = node.getPath
 
     def container: JcrNode = JcrFS.create(node.getParent)
 
     /**
-     * @returns  null
+     * @return  null
      */
     def file: File = null
 
     def absolute = this
 
     /**
-     * @returns  the value of the jcr:lastModified property of either the jcr:content node
+     * @return  the value of the jcr:lastModified property of either the jcr:content node
      *   beneath this node or from this node itself otherwise or 0 if this node does not
      *   have a jcr:lastModified property.
      */
@@ -119,7 +119,7 @@ object JcrFS {
   case class JcrFolder(node: Node) extends JcrNode(node) {
 
     /**
-     * @returns  true
+     * @return  true
      */
     def isDirectory: Boolean = true
 
@@ -136,7 +136,7 @@ object JcrFS {
     def output: OutputStream = throw new IOException("Cannot write to directory")
 
     /**
-     * @returns  the child nodes of this nodes which are either nt:file or nt:folder
+     * @return  the child nodes of this nodes which are either nt:file or nt:folder
      */
     def iterator: Iterator[JcrNode] =
       new Iterator[Node] {
@@ -167,7 +167,7 @@ object JcrFS {
     /**
      * Creates a child node of type nt:file with the given name if such node exists.
      * @param name
-     * @returns  the (possibly newly created) child node
+     * @return  the (possibly newly created) child node
      */
     override def fileNamed(name: String): AbstractFile = {
       valueOrElse(lookupName(name, false)) {
@@ -184,7 +184,7 @@ object JcrFS {
     /**
      * Creates a child node of type nt:folder with the given name if such node exists.
      * @param name
-     * @returns  the (possibly newly created) child node
+     * @return  the (possibly newly created) child node
      */
     override def subdirectoryNamed(name: String): AbstractFile = {
       valueOrElse(lookupName(name, true)) {
@@ -198,14 +198,14 @@ object JcrFS {
   case class JcrFile(node: Node) extends JcrNode(node) {
 
     /**
-     * @returns  the jcr:content child node of this node or null if none exists
+     * @return  the jcr:content child node of this node or null if none exists
      */
     def contentNode: Node =
       if (node.hasNode("jcr:content")) node.getNode("jcr:content")
       else null
 
     /**
-     * @returns  the jcr:data property of the jcr:content child node of this node or
+     * @return  the jcr:data property of the jcr:content child node of this node or
      *   null if none exists
      */
     def dataProperty: Property =
@@ -215,12 +215,12 @@ object JcrFS {
       }
 
     /**
-     * @returns  false
+     * @return  false
      */
     def isDirectory = false
 
     /**
-     * @returns  a stream for reading from {@ling #dataProperty}. The stream is empty
+     * @return  a stream for reading from [[guggla.JcrFS.JcrFile#dataProperty]]. The stream is empty
      *   if the property does not exist.
      */
     def input: InputStream = dataProperty match {
@@ -229,7 +229,7 @@ object JcrFS {
     }
 
     /**
-     * @returns  a stream for writing to {@ling #dataProperty}. If necessary the child
+     * @return  a stream for writing to [[guggla.JcrFS.JcrFile#dataProperty]]. If necessary the child
      *   jcr:content child node and its jcr:data property are created.
      */
     def output: OutputStream = new ByteArrayOutputStream() {
@@ -245,7 +245,7 @@ object JcrFS {
     }
 
     /**
-     * @returns the size of the {@ling #dataProperty} or None if the property does not
+     * @return the size of the [[guggla.JcrFS.JcrFile#dataProperty]] or None if the property does not
      * exist.
      */
     override def sizeOption: Option[Int] = {

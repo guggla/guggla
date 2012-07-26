@@ -23,13 +23,13 @@ import org.osgi.framework.Bundle
 import scala.tools.nsc.io.AbstractFile
 
 /**
- * Implementation of {@link AbstractFile} on top of a {@link org.osgi.framework.Bundle}
+ * Implementation of [[scala.tools.nsc.io.AbstractFile]] on top of a [[org.osgi.framework.Bundle]]
  */
 object BundleFS {
 
   /**
-   * Create a new {@link AbstractFile} instance representing an
-   * {@link org.osgi.framework.Bundle}
+   * Create a new [[scala.tools.nsc.io.AbstractFile]] instance representing an
+   * [[org.osgi.framework.Bundle]]
    * @param bundle
    */
   def create(bundle: Bundle): AbstractFile = {
@@ -179,7 +179,7 @@ object BundleFS {
        * @return false
        */
       def isDirectory: Boolean = false
-      override def sizeOption: Option[Int] = Some(bundle.getEntry(fullName).openConnection().getContentLength())
+      override def sizeOption: Option[Int] = Some(bundle.getEntry(fullName).openConnection().getContentLength)
       def iterator: Iterator[AbstractFile] = Iterator.empty
       def lookupName(name: String, directory: Boolean): AbstractFile = null
     }

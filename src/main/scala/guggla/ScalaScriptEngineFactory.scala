@@ -43,8 +43,8 @@ object ScalaScriptEngineFactory {
 }
 
 /**
- * JSR 223 compliant {@link `ScriptEngineFactory`} for Scala.
- * {@link ScriptInfo} and {@link SettingsProvider} may be used to parametrize
+ * JSR 223 compliant [[javax.script.ScriptEngineFactory]] for Scala.
+ * [[guggla.ScriptInfo]] and [[guggla.SettingsProvider]] may be used to parametrize
  * this factory. When running inside an OSGi container, ScriptInfo and
  * SettingsProvider are looked up and injected by the Service Component Runtime.
  */

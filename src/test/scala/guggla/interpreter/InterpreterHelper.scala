@@ -38,7 +38,7 @@ class InterpreterHelper(val srcDir: AbstractFile, val outDir: AbstractFile) {
   def eval(name: String, code: String, bindings: Bindings): String = {
     try {
       interpreterOut.reset()
-      val result = interpreter.interprete(name, code, bindings, null, interpreterOut)
+      val result = interpreter.interpret(name, code, bindings, null, interpreterOut)
       if (result.hasErrors) throw new ScriptException(result.toString)
       interpreterOut.toString
     } catch {
@@ -50,7 +50,7 @@ class InterpreterHelper(val srcDir: AbstractFile, val outDir: AbstractFile) {
   def eval(name: String, src: AbstractFile, bindings: Bindings) = {
     try {
       interpreterOut.reset()
-      val result = interpreter.interprete(name, src, bindings, null, interpreterOut)
+      val result = interpreter.interpret(name, src, bindings, null, interpreterOut)
       if (result.hasErrors) throw new ScriptException(result.toString)
       interpreterOut.toString
     } catch {

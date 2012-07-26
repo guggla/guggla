@@ -22,7 +22,7 @@ import scala.tools.nsc.io.AbstractFile
 import scala.tools.nsc.reporters.Reporter
 
 /**
- * Provides compiler settings to the {@link ScalaScriptEngineFactory}.
+ * Provides compiler settings to the [[guggla.ScalaScriptEngineFactory]].
  */
 trait SettingsProvider {
 

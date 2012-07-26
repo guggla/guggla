@@ -17,7 +17,7 @@
 package guggla.interpreter
 
 /**
- * Exception thrown by {@link ScalaInterpreter} in case of errors.
+ * Exception thrown by [[guggla.interpreter.ScalaInterpreter]] in case of errors.
  */
 class InterpreterException(message: String, cause: Throwable) extends Exception(message, cause) {
   def this(cause: Throwable) = this(if (cause == null) null else cause.getMessage, cause)

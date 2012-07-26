@@ -30,7 +30,7 @@ object ScalaScriptEngine {
 }
 
 /**
- * JSR 223 compliant {@link ScriptEngine} for Scala.
+ * JSR 223 compliant [[javax.script.ScriptEngine]] for Scala.
  * Scripts must be of the following form:
  *
  * <pre>
@@ -42,7 +42,7 @@ object ScalaScriptEngine {
  * }
  * </pre>
  *
- * Here it is assumed that the {@Bindings} passed for script evaluation contains a
+ * Here it is assumed that the [[javax.script.Bindings]] passed for script evaluation contains a
  * value for the name <em>bar</em>.
  *
  * The parameter <code>args</code> contains statically typed bindings generated from the
