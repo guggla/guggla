@@ -91,7 +91,7 @@ trait Bindings extends Map[String, AnyRef] {
 }
 
 /**
- * Default implementation of [[guggla.interpreter.Bindings]] backed by a mutable Ma
+ * Default implementation of [[guggla.interpreter.Bindings]] backed by a mutable Map
  */
 private class BindingsWrapper(map: mutable.Map[String, AnyRef]) extends Bindings {
   def +[B >: AnyRef](kv: (String, B)) = map + kv
