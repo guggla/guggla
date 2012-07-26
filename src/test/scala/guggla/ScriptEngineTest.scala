@@ -52,29 +52,25 @@ class ScriptEngineTest {
   def testSimple() {
     val expected = "hello"
 
-    //create the script
-    val code = new StringBuilder()
-    code.append("package guggla{")
-    code.append("\n")
-    code.append("class Script(args: ScriptArgs) {")
-    code.append("\n")
-    code.append("import args._")
-    code.append("\n")
-    code.append("println(\"output:\" + obj) ")
-    code.append("\n")
-    code.append("}}")
+    val script = """
+      package guggla {
+        class Script(args: ScriptArgs) {
+          import args._
+          println("output:" + obj)
+        }
+      }"""
 
-    //get the script engine
+    // get the script engine
     val scriptEngine: ScriptEngine = getScriptEngine
-    val b = scriptEngine.getBindings(ScriptContext.ENGINE_SCOPE)
-    b.put("obj", expected)
+    val bindings = scriptEngine.getBindings(ScriptContext.ENGINE_SCOPE)
+    bindings.put("obj", expected)
 
-    //get a reference to the output
+    // get a reference to the output
     val writer = new StringWriter()
     scriptEngine.getContext.setWriter(writer)
-    scriptEngine.eval(code.toString(), b)
+    scriptEngine.eval(script, bindings)
 
-    //check output
+    // check output
     assertEquals("output:" + expected, writer.toString.trim())
   }
 
@@ -86,26 +82,22 @@ class ScriptEngineTest {
   @Test
   def testObject() {
     val scriptEngine: ScriptEngine = getScriptEngine
-    val code = new StringBuilder()
-    code.append("package guggla{")
-    code.append("\n")
-    code.append("class Script(args: ScriptArgs) {")
-    code.append("\n")
-    code.append("import args._")
-    code.append("\n")
-    code.append("println(\"output:\" + obj.saySomething()) ")
-    code.append("\n")
-    code.append("}}")
+    val script = """
+      package guggla {
+        class Script(args: ScriptArgs) {
+          import args._
+          println("output:" + obj.saySomething())
+        }
+      }"""
 
     val say = "hello"
-
-    val b = scriptEngine.getBindings(ScriptContext.ENGINE_SCOPE)
-    b.put("obj", new TestInject(say))
+    val bindings = scriptEngine.getBindings(ScriptContext.ENGINE_SCOPE)
+    bindings.put("obj", new TestInject(say))
 
     val writer = new StringWriter()
     scriptEngine.getContext.setWriter(writer)
 
-    scriptEngine.eval(code.toString(), b)
+    scriptEngine.eval(script, bindings)
     assertEquals("output:" + say, writer.toString.trim())
   }
 
@@ -117,16 +109,13 @@ class ScriptEngineTest {
   @Test
   @Ignore("The Scala script engine is currently not thread safe")
   def testMultipleThreads() {
-    val code = new StringBuilder()
-    code.append("package guggla{")
-    code.append("\n")
-    code.append("class Script(args: ScriptArgs) {")
-    code.append("\n")
-    code.append("import args._")
-    code.append("\n")
-    code.append("println(\"output:\" + obj.saySomething()) ")
-    code.append("\n")
-    code.append("}}")
+    val script = """
+      package guggla {
+        class Script(args: ScriptArgs) {
+          import args._
+          println(\"output:\" + obj.saySomething())
+        }
+      }"""
 
     val threads = 3
     val operations = 100
@@ -135,24 +124,27 @@ class ScriptEngineTest {
 
     for (i <- 0 to operations) {
         val say = "#" + (i % threads)
-        val c: Callable[Boolean] = () => buildSayCallable(code.toString(), say)
-      val f: Future[Boolean] = e.submit(c)
+        val f: Future[Boolean] = e.submit(() => buildSayCallable(script, say))
       futures = f :: futures
     }
+
     e.shutdown()
     e.awaitTermination(2 * threads * operations, TimeUnit.SECONDS)
 
     futures.foreach(f => {
       try {
         assertTrue(f.get(10, TimeUnit.SECONDS))
-      } catch {
-        case e: Exception => { e.printStackTrace(); fail(e.getMessage); }
+      }
+      catch {
+        case e: Exception => {
+          e.printStackTrace()
+          fail(e.getMessage)
+        }
       }
     })
   }
 
   def buildSayCallable(code: String, say: String): Boolean = {
-
     val scriptEngine: ScriptEngine = getScriptEngine
     // println("thread executing with engine: " + scriptEngine + ", say: " + say);
 
