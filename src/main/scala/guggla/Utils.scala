@@ -111,8 +111,8 @@ object NonExistingFile extends AbstractFile {
   def absolute = this
   def container = null
   def file = null
-  def create { unsupported() }
-  def delete { unsupported() }
+  def create() { unsupported() }
+  def delete() { unsupported() }
   def isDirectory = false
   def lastModified = 0
   def input: InputStream = null

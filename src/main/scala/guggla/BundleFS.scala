@@ -70,8 +70,8 @@ object BundleFS {
       @throws(classOf[IOException])
       def output = throw new IOException("not supported: output")
 
-      def create { unsupported() }
-      def delete { unsupported() }
+      def create() { unsupported() }
+      def delete() { unsupported() }
 
       def lookupNameUnchecked(name: String, directory: Boolean) = {
         val file = lookupName(name, directory)

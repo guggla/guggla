@@ -31,8 +31,8 @@ class BacklogReporter(val settings: Settings, size: Int) extends AbstractReporte
     this(settings, BacklogReporter.DEFAULT_SIZE)
   } 
 
-  override def reset {
-    super.reset
+  override def reset() {
+    super.reset()
     backLog = Nil
   }
 
@@ -46,7 +46,7 @@ class BacklogReporter(val settings: Settings, size: Int) extends AbstractReporte
     }
   }
 
-  override def displayPrompt {
+  override def displayPrompt() {
     // empty
   }
   

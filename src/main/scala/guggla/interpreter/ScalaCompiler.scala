@@ -23,7 +23,7 @@ import scala.tools.nsc.util.{ ClassPath, MergedClassPath, DirectoryClassPath }
 import tools.nsc.backend.JavaPlatform
 
 /**
- * Extended Scala compiler which supports a class path with {@link AbstractFile} entries.
+ * Extended Scala compiler which supports a class path with [[scala.tools.nsc.io.AbstractFile]] entries.
  * Note: this implementation does not support MSIL (.NET).
  */
 class ScalaCompiler(settings: Settings, reporter: Reporter, classes: Array[AbstractFile])
