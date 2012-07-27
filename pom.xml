@@ -35,7 +35,7 @@
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
         <encoding>UTF-8</encoding>
-        <scala.version>2.8.1</scala.version>
+        <scala.version>2.9.2</scala.version>
     </properties>
 
     <build>
@@ -120,14 +120,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.weiglewilczek.scala-lang-osgi</groupId>
+            <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
             <version>${scala.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>com.weiglewilczek.scala-lang-osgi</groupId>
+            <groupId>org.scala-lang</groupId>
             <artifactId>scala-compiler</artifactId>
             <version>${scala.version}</version>
             <scope>provided</scope>
