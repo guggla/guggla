@@ -185,7 +185,7 @@ class ScalaInterpreter(settings: Settings, reporter: Reporter, classes: Array[Ab
    */
   @throws(classOf[InterpreterException])
   def interpret(name: String, code: String, bindings: Bindings, in: Option[InputStream],
-    out: Option[OutputStream]): Reporter = {
+                out: Option[OutputStream]): Reporter = {
     compile(name, code, bindings)
     if (reporter.hasErrors)
       reporter
